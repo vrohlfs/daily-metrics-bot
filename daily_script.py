@@ -1,0 +1,67 @@
+import os
+import subprocess
+from datetime import datetime
+
+# Change this to your repository path
+REPO_PATH = '/path/to/daily-metrics-bot'
+
+def calculate_progress():
+    now = datetime.now()
+    # Define start and end dates for year, month, and day
+    start_of_year = datetime(now.year, 1, 1)
+    end_of_year = datetime(now.year + 1, 1, 1)
+    start_of_month = datetime(now.year, now.month, 1)
+    next_month = now.month % 12 + 1
+    start_of_next_month = datetime(now.year + (now.month // 12), next_month, 1)
+    start_of_day = datetime(now.year, now.month, now.day)
+    end_of_day = start_of_day.replace(hour=23, minute=59, second=59)
+
+    # Calculate percentage progress
+    year_progress = (now - start_of_year) / (end_of_year - start_of_year) * 100
+    month_progress = (now - start_of_month) / (start_of_next_month - start_of_month) * 100
+    day_progress = (now - start_of_day) / (end_of_day - start_of_day) * 100
+    life_progress = ((now.year - 1993) / (80 - 1993)) * 100  # Using 1993 as birth year and 80 as lifespan
+
+    return year_progress, month_progress, day_progress, life_progress
+
+def daily_commit():
+    # Navigate to the repository
+    os.chdir(REPO_PATH)
+    
+    # Calculate progress metrics
+    year_progress, month_progress, day_progress, life_progress = calculate_progress()
+    
+    # Define the message and house rules
+    message = """
+    Be good, and be good at it - 1.01^365
+
+    Daily reminder of house rules:
+    - Hard Thing Rule
+    - Fun Thing Rule
+    - Be early
+    - No whining
+    - No complaining
+    - No excuses
+
+    Time Metrics:
+    - Year: {:.2f}%
+    - Month: {:.2f}%
+    - Day: {:.2f}%
+    - Life: {:.2f}%
+    """.format(year_progress, month_progress, day_progress, life_progress)
+    
+    # Create a new log file for each day in the 'daily_files' folder
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    log_filename = os.path.join('daily_files', f"log-{date_str}.txt")
+    
+    with open(log_filename, 'w') as file:
+        file.write(f"Date: {datetime.now()}\n")
+        file.write(message)
+    
+    # Git commands to add, commit, and push
+    subprocess.run(['git', 'add', log_filename])
+    subprocess.run(['git', 'commit', '-m', f'Daily log for {date_str}'])
+    subprocess.run(['git', 'push'])
+
+if __name__ == '__main__':
+    daily_commit()
