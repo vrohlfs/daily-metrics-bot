@@ -2,7 +2,6 @@ name: Daily GitHub Contribution
 on:
   schedule:
     - cron: '0 0 * * *'  # Runs every day at midnight UTC
-  # Optional: Add workflow_dispatch to allow manual triggers
   workflow_dispatch:
 
 jobs:
@@ -10,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4  # Updated from v2
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5  # Updated from v2
         with:
           python-version: '3.x'
       - name: Run daily script
