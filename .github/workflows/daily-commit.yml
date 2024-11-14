@@ -20,8 +20,8 @@ jobs:
         run: python daily_script.py
       - name: Push changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "vrohlfs"
+          git config user.email "51542009+vrohlfs@users.noreply.github.com"
           git add daily_files/
           git commit -m "Daily log file" || echo "No changes to commit"
           git push
